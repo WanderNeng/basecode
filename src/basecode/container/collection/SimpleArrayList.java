@@ -1,9 +1,9 @@
 package basecode.container.collection;
 
 
-import java.util.Arrays;
+import java.util.*;
 
-public class SimpleArrayList<E> {
+public class SimpleArrayList<E> implements Cloneable{
 
     private final static int DEFAULT_CAPACITY = 10;
 
@@ -48,6 +48,7 @@ public class SimpleArrayList<E> {
         }
         elements[size] = e;
         size++;
+        modCount++;
 
     }
 
@@ -72,12 +73,12 @@ public class SimpleArrayList<E> {
     }
 
     public void fastRemove(int index) {
-        modCount++;
         int numMoved = size - index - 1;
         if (numMoved > 0)
             System.arraycopy(elements, index + 1, elements, index,
                     numMoved);
         elements[--size] = null;
+        modCount++;
     }
 
     //    查
@@ -99,6 +100,13 @@ public class SimpleArrayList<E> {
         return -1;
     }
 
+    public Object get(int index){
+        rangeCheck(index);
+
+        return elements[index];
+
+    }
+
     public boolean contains(Object[] o){
         return indexOf(o) >= 0;
     }
@@ -110,11 +118,65 @@ public class SimpleArrayList<E> {
         size = 0;
     }
 
+    private void rangeCheck(int index) {
+        if (index >= size && index <0)
+            throw new IndexOutOfBoundsException("超出集合范围！");
+    }
+
+
 
     private void grow() {
-        int newCapacity = size + size >> 1;
+        int newCapacity = size + (size >> 1);
         elements = Arrays.copyOf(elements, newCapacity);
     }
+
+
+    public Iterator<E> iterator(){return new Itr(); }
+
+//    迭代器
+    private class Itr implements Iterator<E> {
+        int cursor;
+        int lastRet = -1;
+        int expectedModCount = modCount;
+        @Override
+        public E next() {
+            checkForComodification();
+            int i = cursor;
+            if (i >= size)
+                throw new NoSuchElementException();
+            Object[] elements = SimpleArrayList.this.elements;
+            if (i >= elements.length)
+                throw new ConcurrentModificationException();
+            cursor = i + 1;
+            return (E) elements[lastRet = i];
+        }
+
+        @Override
+        public boolean hasNext(){
+            return cursor < size;
+        }
+
+        final void checkForComodification() {
+            if (modCount != expectedModCount)
+                throw new ConcurrentModificationException();
+        }
+
+
+    }
+    @Override
+    public Object clone(){
+        try {
+            SimpleArrayList<?> v = (SimpleArrayList<?>) super.clone();
+            v.elements = Arrays.copyOf(elements, size);
+            v.modCount = 0;
+            return v;
+        } catch (CloneNotSupportedException e) {
+            // this shouldn't happen, since we are Cloneable
+            throw new InternalError(e);
+        }
+    }
+
+
 
 
 }
