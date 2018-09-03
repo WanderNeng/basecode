@@ -5,7 +5,7 @@ public class HeapSort {
     int len;
 
     public void heapSort(int[] array){
-        int len = array.length;
+        int len = array.length - 1;
 
         if(len < 1){return;}
 
