@@ -1,20 +1,48 @@
 package basecode.designpatterns.producerandcustomer;
 
+import java.util.Random;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+/*
+    生产者
+ */
+
 public class Producer implements Runnable {
 
-    int count;
+    private BlockingQueue<Product> bq;
 
-    public Producer(int count){
-        this.count = count;
+    private volatile boolean isRunning = true;
+    private static AtomicInteger count = new AtomicInteger();
+    private static final int SLEEPTIME = 1000;
+
+    public Producer(BlockingQueue<Product> bq) {
+        this.bq = bq;
     }
-
-    public void producer(){
-        count++;
-    }
-
 
     @Override
     public void run() {
+        Product pro = null;
+        Random r = new Random();
+        System.out.println("start producting id:" + Thread.currentThread().getId());
+        try {
+            while (isRunning) {
+                Thread.sleep(r.nextInt(SLEEPTIME));
+                pro = new Product(count.incrementAndGet());
+                System.out.println(pro + " 加入队列");
+                if (!bq.offer(pro, 2, TimeUnit.SECONDS)) {
+                    System.err.println(" 加入队列失败");
+                }
+            }
+            }catch(Exception e){
+                e.printStackTrace();
+                Thread.currentThread().interrupt();
+            }
 
+    }
+
+    public void stop(){
+        isRunning = false;
     }
 }
