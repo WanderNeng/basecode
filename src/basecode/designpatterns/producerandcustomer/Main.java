@@ -8,6 +8,9 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class Main {
 
     public static void main(String[] args) throws InterruptedException{
+        //BlockingQueue时concurrent包下的类，是线程同步的，当offer方法到时间失败的话，返回false
+        //当put方法失败时，抛出异常
+        //通过队列的容量和阻塞控制生产者和消费者的生产和消费
         BlockingQueue<Product> queue = new LinkedBlockingDeque<>(10);
         Producer p1 = new Producer(queue);
         Producer p2 = new Producer(queue);
