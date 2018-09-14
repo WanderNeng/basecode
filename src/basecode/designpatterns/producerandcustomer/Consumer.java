@@ -20,7 +20,7 @@ public class Consumer implements Runnable{
         Random r = new Random();
         try{
             while(true){
-                Product pro = bq.take();
+                Product pro = bq.take();//如果队列为空则阻塞
                 if(pro != null)
                 {
                     int re = pro.getData() * pro.getData();

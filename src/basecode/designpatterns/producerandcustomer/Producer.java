@@ -31,7 +31,7 @@ public class Producer implements Runnable {
                 Thread.sleep(r.nextInt(SLEEPTIME));
                 pro = new Product(count.incrementAndGet());
                 System.out.println(pro + " 加入队列");
-                if (!bq.offer(pro, 2, TimeUnit.SECONDS)) {
+                if (!bq.offer(pro, 2, TimeUnit.SECONDS)) {//队列满了则返回false
                     System.err.println(" 加入队列失败");
                 }
             }
