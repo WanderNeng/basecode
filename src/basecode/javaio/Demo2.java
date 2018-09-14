@@ -4,7 +4,7 @@ package basecode.javaio;
 import java.io.FileReader;
 import java.io.IOException;
 
-//文件读取
+//文件读取，字符读取
 public class Demo2 {
 
     public static void main(String[] args){
