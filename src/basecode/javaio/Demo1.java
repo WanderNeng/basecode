@@ -12,7 +12,6 @@ public class Demo1 {
         try {
             fw = new FileWriter(path, true);//如果追加数据就使用true
             fw.write("That is a demo about writing char.");
-            fw.flush();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
